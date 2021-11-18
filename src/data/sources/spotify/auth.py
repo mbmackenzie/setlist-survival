@@ -1,4 +1,5 @@
 import os
+
 import requests
 
 AUTH_URL = "https://accounts.spotify.com/api/token"
@@ -20,4 +21,3 @@ def get_access_token() -> str:
 
     auth_response_data = auth_response.json()
     return auth_response_data["access_token"]
-

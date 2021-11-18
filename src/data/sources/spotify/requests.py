@@ -1,10 +1,14 @@
+from typing import Any
+
 import requests
 from pandas import to_datetime
 
-from .models import Album, Track, AudioFeatures
+from .models import Album
+from .models import AudioFeatures
+from .models import Track
 
 
-def make_album(response: dict) -> Album:
+def make_album(response: dict[str, Any]) -> Album:
     return Album(
         **{
             "type": response.get("album_type"),
@@ -16,7 +20,7 @@ def make_album(response: dict) -> Album:
     )
 
 
-def make_track(response: dict, album_id: str) -> Track:
+def make_track(response: dict[str, Any], album_id: str) -> Track:
     return Track(
         **{"album_id": album_id, "id": response.get("id"), "name": response.get("name")}
     )
@@ -59,4 +63,3 @@ def get_audio_features(access_token: str, track_id: str) -> AudioFeatures:
     data = response.json()
 
     return AudioFeatures(**data)
-

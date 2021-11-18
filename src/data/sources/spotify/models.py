@@ -1,7 +1,7 @@
-import pydantic
 from datetime import datetime
-
 from typing import Optional
+
+import pydantic
 
 
 class AudioFeatures(pydantic.BaseModel):
@@ -36,6 +36,9 @@ class Album(pydantic.BaseModel):
     tracks: Optional[list[Track]]
 
     @property
-    def is_album(self):
+    def is_album(self) -> bool:
         return self.type == "album"
 
+
+class AlbumList(pydantic.BaseModel):
+    albums: list[Album]
