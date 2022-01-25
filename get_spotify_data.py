@@ -1,17 +1,8 @@
 import json
-from pydantic import BaseModel
-from dotenv import load_dotenv
 
-from lib.spotify.models import Album
+from lib.spotify.models import AlbumList
 from lib.spotify.auth import get_access_token
 from lib.spotify.requests import get_albums, get_tracks, get_audio_features
-
-
-load_dotenv()
-
-
-class AlbumList(BaseModel):
-    albums: list[Album]
 
 
 INCLUDE_ALBUM_IDS = [
@@ -24,10 +15,12 @@ INCLUDE_ALBUM_IDS = [
     "28q2N44ocJECgf8sbHEDfY",
     "30ly6F6Xl0TKmyBCU50Khv",
     "4EnNuo8fG7dMoxMefbApRY",
+    "1zQ6F8gMagKcPL4SoA80cx",
 ]
 
 
 def main():
+
     # get access token
     access_token = get_access_token()
 
@@ -58,5 +51,5 @@ def main():
         outfile.close()
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     main()
