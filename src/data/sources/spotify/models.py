@@ -1,10 +1,9 @@
-import pydantic
 from datetime import datetime
-
 from typing import Optional
 
 import pandas as pd
 import tidybear as tb
+import pydantic
 
 
 class AudioFeatures(pydantic.BaseModel):
@@ -63,3 +62,6 @@ class AlbumList(pydantic.BaseModel):
             **track.features.dict(),
         }
 
+
+class AlbumList(pydantic.BaseModel):
+    albums: list[Album]

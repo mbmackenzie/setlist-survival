@@ -1,4 +1,5 @@
 import os
+
 import requests
 
 from dotenv import load_dotenv
@@ -25,4 +26,3 @@ def get_access_token() -> str:
 
     auth_response_data = auth_response.json()
     return auth_response_data["access_token"]
-

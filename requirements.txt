@@ -1,5 +1,5 @@
 numpy
 pandas
-tidybear
-pydantic
 plotnine
+pydantic
+tidybear
