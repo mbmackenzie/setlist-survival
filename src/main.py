@@ -1,18 +1,13 @@
+from importlib import import_module
 from pathlib import Path
 
 import click
-from dotenv import find_dotenv
+import yaml
 from dotenv import load_dotenv
 
-from src.data.ingest import Ingester
+from src.ingest import Ingester
 
-load_dotenv(find_dotenv())
-
-
-def make_path(path_str: str) -> Path:
-    """Convert string path to Path object"""
-    path = Path(path_str)
-    return path.resolve()
+load_dotenv()
 
 
 @click.group()
@@ -22,12 +17,18 @@ def cli() -> None:
 
 
 @cli.command()
-@click.option("-o", "output_dir", help="Path to output ingested sources to")
-def ingest(output_dir: str) -> None:
+@click.option("-o", "output_dir", help="Path to output dir")
+@click.option("-s", "use_sources", multiple=True, help="Sources to ingest")
+def ingest(output_dir: str, use_sources: list[str]) -> None:
     """Save data from each source to disk."""
-    from src.data.sources import SpotifySource
+    config = yaml.safe_load(open("config.yaml"))
 
-    output_dir_path: Path = make_path(output_dir)
+    sources = []
+    for short_name, source_path in config["sources"].items():
+        if short_name in use_sources:
+            module_name, class_name = source_path.split(":")
+            cls = getattr(import_module(module_name), class_name)
+            sources.append(cls())
 
-    sources = [SpotifySource()]
+    output_dir_path: Path = Path(output_dir)
     Ingester(output_dir_path, sources).ingest()

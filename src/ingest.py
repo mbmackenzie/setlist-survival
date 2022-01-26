@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import Any
 from typing import Optional
@@ -7,6 +6,7 @@ from typing import Union
 
 import pandas as pd
 
+from .logger import logger
 
 OutputData = Union[pd.DataFrame, dict]
 
@@ -18,11 +18,9 @@ class DataSource(Protocol):
 
     def get_data(self, **kwargs: Optional[Any]) -> OutputData:
         """Function that returns the data to save"""
-        ...
 
     def save_data(self, data: OutputData, output_dir: Path) -> None:
         """Function that saves the data"""
-        ...
 
 
 class Ingester:
@@ -38,5 +36,8 @@ class Ingester:
     def ingest(self) -> None:
         """Ingest data from sources"""
         for source in self.sources:
+            logger.info(f"Starting {source.name} ingestion")
             data = source.get_data()
+
+            logger.info(f"Exporting to {self.output_dir}")
             source.save_data(data, self.output_dir)

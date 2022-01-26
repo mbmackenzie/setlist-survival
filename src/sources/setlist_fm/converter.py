@@ -1,12 +1,14 @@
+from datetime import datetime
 from typing import Any
 from typing import Optional
 
 from pandas import to_datetime
 
 from .models import Concert
-from .models import ConcertList
-from .models import Song
-from .models import Venue
+
+# from .models import ConcertList
+# from .models import Song
+# from .models import Venue
 
 
 def multiget(dictionary: dict[Any, Any], keys_to_get: list[str]) -> dict[Any, Any]:
@@ -54,7 +56,8 @@ class ResponseToConcertConverter:
     def _create_concert_dict(
         cls, concert: dict[str, Any], venue: dict[str, Any], songs: list[dict[str, Any]]
     ) -> dict[str, Any]:
-        as_dt = lambda date: to_datetime(date).to_pydatetime()
+        def as_dt(date: Any) -> datetime:
+            return to_datetime(date).to_pydatetime()
 
         return {
             "id": concert.get("id"),

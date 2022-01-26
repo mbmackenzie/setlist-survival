@@ -1,0 +1,3 @@
+sources:
+  spotify: src.sources.spotify.source:SpotifySource
+  setlists: src.sources.setlist_fm.source:SetlistSource
