@@ -6,16 +6,16 @@ from pandas import to_datetime
 
 from .models import Concert
 
-# from .models import ConcertList
-# from .models import Song
-# from .models import Venue
 
-
-def multiget(dictionary: dict[Any, Any], keys_to_get: list[str]) -> dict[Any, Any]:
+def multiget(
+    dictionary: dict[Any, Any],
+    keys_to_get: list[str],
+    defult: Any = None,
+) -> dict[Any, Any]:
     ret = dictionary
     for key in keys_to_get[:-1]:
         ret = ret.get(key, {})
-    return ret.get(keys_to_get[-1], {})
+    return ret.get(keys_to_get[-1], defult)
 
 
 class ResponseToConcertConverter:
@@ -41,8 +41,8 @@ class ResponseToConcertConverter:
             "id": venue.get("id"),
             "name": venue.get("name"),
             "city": multiget(venue, ["city", "name"]),
-            "state": multiget(venue, ["city", "state"]),
-            "country": multiget(venue, ["city", "country", "code"]),
+            "state": multiget(venue, ["city", "state"], ""),
+            "country": multiget(venue, ["city", "country", "code"], ""),
         }
 
     @classmethod
@@ -57,7 +57,7 @@ class ResponseToConcertConverter:
         cls, concert: dict[str, Any], venue: dict[str, Any], songs: list[dict[str, Any]]
     ) -> dict[str, Any]:
         def as_dt(date: Any) -> datetime:
-            return to_datetime(date).to_pydatetime()
+            return to_datetime(date, format="%d-%m-%Y").to_pydatetime()
 
         return {
             "id": concert.get("id"),

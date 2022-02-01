@@ -8,8 +8,8 @@ load_dotenv()
 
 AUTH_URL = "https://accounts.spotify.com/api/token"
 
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-SPOTIFY_SECRET_KEY = os.getenv("SPOTIFY_SECRET_KEY")
+SPOTIFY_CLIENT_ID = os.environ["SPOTIFY_CLIENT_ID"]
+SPOTIFY_SECRET_KEY = os.environ["SPOTIFY_SECRET_KEY"]
 
 
 def get_access_token() -> str:
