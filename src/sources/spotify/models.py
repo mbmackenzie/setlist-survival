@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Optional
 
 import pandas as pd
-import tidybear as tb
 import pydantic
+import tidybear as tb
 
 
 class AudioFeatures(pydantic.BaseModel):
@@ -38,30 +38,30 @@ class Album(pydantic.BaseModel):
     tracks: Optional[list[Track]]
 
 
+def track_to_record(album: Album, track: Track) -> dict[str, str]:
+    album_details = album.dict(include={"name", "released"})
+    album_details["album_name"] = album_details.pop("name")
+
+    return {
+        **track.dict(include={"album_id", "id"}),
+        **album_details,
+        **track.dict(exclude={"album_id", "id", "features"}),
+        **(track.features.dict() if track.features is not None else {}),
+    }
+
+
 class AlbumList(pydantic.BaseModel):
     albums: list[Album]
 
-    def to_frame(self):
+    def to_frame(self) -> pd.DataFrame:
         records = []
         for album in self.albums:
+            if album.tracks is None:
+                continue
+
             for track in album.tracks:
-                as_record = self._track_to_record(album, track)
+                as_record = track_to_record(album, track)
                 records.append(as_record)
 
         df = pd.DataFrame(records)
         return tb.rename(df, id="song_id")
-
-    def _track_to_record(self, album: Album, track: Track) -> dict:
-        album_details = album.dict(include={"name", "released"})
-        album_details["album_name"] = album_details.pop("name")
-
-        return {
-            **track.dict(include={"album_id", "id"}),
-            **album_details,
-            **track.dict(exclude={"album_id", "id", "features"}),
-            **track.features.dict(),
-        }
-
-
-class AlbumList(pydantic.BaseModel):
-    albums: list[Album]
