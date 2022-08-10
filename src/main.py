@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 from dotenv import load_dotenv
 
-from .config import load_config
+from src.config import load_config
 from src.ingester import Ingester
 
 load_dotenv()
@@ -31,6 +31,12 @@ def cli() -> None:
 
 
 @cli.command()
+def init() -> None:
+    """Set up project to defaults"""
+    pass
+
+
+@cli.command()
 @click.option("-o", "output_dir", help="Path to output dir")
 @click.option("-s", "use_sources", multiple=True, help="Sources to ingest")
 @click.option("--arg", "use_arguments", multiple=True, help="Any ingest arguments")
@@ -52,7 +58,7 @@ def ingest(output_dir: str, use_sources: list[str], use_arguments: list[str]) ->
     sources = []
     for short_name, source_path in config.sources.items():
         if short_name in use_sources or len(use_sources) == 0:
-            module_name, class_name = source_path.split(":")
+            module_name, class_name = source_path.split("::")
             cls = getattr(import_module(module_name), class_name)
             sources.append(cls())
 

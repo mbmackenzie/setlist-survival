@@ -1,7 +1,8 @@
 sources:
-  spotify: src.sources.spotify.source:SpotifySource
-  setlists: src.sources.setlist_fm.source:SetlistSource
+  spotify: src.sources.spotify.source::SpotifySource
+  setlists: src.sources.setlist_fm.source::SetlistSource
 
+artist_name: Foo Fighters
 spotify_artist_id: 7jy3rLJdDQY21OgRLCZ9sD
 setlist_fm_mbid: 67f66c07-6e61-4026-ade5-7e782fad3a5d
 

@@ -4,7 +4,7 @@ import pandas as pd
 import tidybear as tb
 
 
-def clean_spotify_data(data_dir: str) -> pd.DataFrame:
+def get_and_clean_spotify_data(data_dir: str) -> pd.DataFrame:
     spotify = pd.read_csv(os.path.join(data_dir, "Spotify.csv"))
     spotify["released"] = pd.to_datetime(spotify.released)
 
@@ -16,13 +16,14 @@ def clean_spotify_data(data_dir: str) -> pd.DataFrame:
     return spotify
 
 
-def clean_setlist_fm_data(data_dir: str) -> pd.DataFrame:
-    concerts = pd.read_csv(os.path.join(data_dir, "Setlist_Concerts.csv"))
-    songs = pd.read_csv(os.path.join(data_dir, "Setlist_Songs.csv"))
-    venues = pd.read_csv(os.path.join(data_dir, "Setlist_Venues.csv"))
+def get_and_clean_setlist_fm_data(data_dir: str) -> pd.DataFrame:
+    concerts = pd.read_csv(os.path.join(data_dir, "Setlists FM - Concerts.csv"))
+    songs = pd.read_csv(os.path.join(data_dir, "Setlists FM - Songs.csv"))
+    venues = pd.read_csv(os.path.join(data_dir, "Setlists FM - Venues.csv"))
 
     songs["num_songs"] = songs.groupby("concert_id").song_number.transform(max)
     songs["set_position"] = (songs.song_number - 1) / songs.num_songs
+    concerts["event_date"] = pd.to_datetime(concerts.event_date)
 
     setlists = (
         songs.loc[~songs.is_cover, :]
@@ -35,15 +36,16 @@ def clean_setlist_fm_data(data_dir: str) -> pd.DataFrame:
         setlists, "venue", "country", "event_date", "set_position", "name"
     )
 
-    setlists.dropna(inplace=True)
-    return setlists
+    return setlists.dropna()
 
 
-def create_final_data(data_dir: str) -> pd.DataFrame:
-    spotify = clean_spotify_data(data_dir)
-    setlist_fm = clean_setlist_fm_data(data_dir)
+def create_full_data(data_dir: str) -> pd.DataFrame:
+    spotify = get_and_clean_spotify_data(data_dir)
+    setlist_fm = get_and_clean_setlist_fm_data(data_dir)
 
-    setlist_fm["fm_name"] = setlist_fm.fm_name.str.lower()
+    setlist_fm["fm_name"] = setlist_fm.name.str.lower()
+    setlist_fm.drop(columns=["name"], inplace=True)
+
     spotify_names = spotify.name.str.lower().unique()
     setlist_fm = setlist_fm.loc[setlist_fm.fm_name.isin(spotify_names)]
 

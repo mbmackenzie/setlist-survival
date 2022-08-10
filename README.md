@@ -2,6 +2,15 @@
 
 ## Reproduce
 
+## .env
+
+```env
+SETLIST_FM_API_KEY=
+
+SPOTIFY_CLIENT_ID=
+SPOTIFY_SECRET_KEY=
+```
+
 ### Ingest data
 
 Set up .env and config.yaml for configuration.

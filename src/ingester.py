@@ -6,9 +6,9 @@ from typing import Union
 
 import pandas as pd
 
-from .logger import logger
 from src.config import Config
 from src.config import load_config
+from src.logger import logger
 
 OutputData = Union[pd.DataFrame, dict]
 
